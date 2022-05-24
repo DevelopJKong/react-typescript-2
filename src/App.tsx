@@ -1,27 +1,22 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+import Circle from "./Circle";
 
-const Father = styled.div`
+const Wrapper = styled.div`
   display: flex;
-`;
-
-const Btn = styled.button`
-  color: white;
-  background-color: tomato;
-  border: 0;
-  border-radius: 15px;
-`;
-
-const Input = styled.input.attrs({required:true})`
-  background-color:tomato;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  background-color: ${(props) => props.theme.backgroundColor};
 `;
 
 
 function App() {
   return (
-    <Father>
-      <Input/>
-      <Input/>
-    </Father>
+    <Wrapper>
+      <Circle bgColor="teal" borderColor="yellow"/>
+      <Circle bgColor="tomato"/>
+    </Wrapper>
   );
 }
 
