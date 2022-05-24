@@ -4,3 +4,7 @@
     스타일을 만들때 매우매우 유용합니다 vue를 정확하게 다 해본것은
     아니지만 그래도 이렇게 styled-components를 사용해서 깔끔하게
     만들수있는것은 또 react의 장점 같습니다
+    - as => 다른 컴포넌트로 변경을 할수있습니다
+        `jsx <Btn as="a"/> `
+
+    - attr => 특정 속성을 넣어줄수있습니다 ex required:true        
