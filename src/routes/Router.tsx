@@ -1,12 +1,12 @@
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import ToDoList from "../pages/ToDoList";
+import Home from "../pages/Home";
 
 const Router = () => {
   return (
     <BrowserRouter>
       <Switch>
         <Route exact path="/">
-          <ToDoList />
+          <Home/>
         </Route>
       </Switch>
     </BrowserRouter>
