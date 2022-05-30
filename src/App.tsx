@@ -1,6 +1,5 @@
-import { createGlobalStyle, ThemeProvider } from "styled-components";
+import { createGlobalStyle } from "styled-components";
 import Router from "./routes/Router";
-import { darkTheme } from "./theme";
 
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap');
@@ -55,9 +54,10 @@ table {
   box-sizing: border-box;
 }
 body {
+  font-weight:300;
   font-family: 'Source Sans Pro', sans-serif;
-  background:linear-gradient(135deg,#e09,#d0e);
-  color:black;
+  color:${props => props.theme.white.darker};
+  background-color:black;
 }
 a {
   text-decoration:none;
@@ -67,10 +67,10 @@ a {
 
 function App() {
   return (
-    <ThemeProvider theme={darkTheme}>
+    <>
       <GlobalStyle />
       <Router />
-    </ThemeProvider>
+    </>
   );
 }
 

@@ -1,68 +1,112 @@
+import { useQuery } from "react-query";
 import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
+import { getMovies, IGetMoviesResult } from "../api";
+import { makeImagePath } from "../utils";
 import { useState } from "react";
-const Wrapper = styled(motion.div)`
-  height: 100vh;
-  width: 100vw;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
+
+const Wrapper = styled.div`
+  background-color: black;
 `;
 
-const Box = styled(motion.div)`
-  background-color: rgba(255, 255, 255, 1);
-  border-radius: 40px;
-  height: 200px;
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
-`;
-
-const Grid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  width: 50vw;
-  gap: 10px;
-  div:first-child,
-  div:last-child {
-    grid-column: span 2;
-  }
-`;
-const Overlay = styled(motion.div)`
-  width: 100%;
-  height: 100%;
-  position: absolute;
+const Loader = styled.div`
+  height: 20vh;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 
-const overlay = {
-  hidden: { backgroundColor: "rgba(0, 0, 0, 0)" },
-  visible: { backgroundColor: "rgba(0, 0, 0, 0.5)" },
-  exit: { backgroundColor: "rgba(0, 0, 0, 0)" },
+const Banner = styled.div<{ bgPhoto: string }>`
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px;
+  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
+    url(${(props) => props.bgPhoto});
+  background-size: cover;
+`;
+
+const Title = styled.h2`
+  font-size: 68px;
+  margin-bottom: 20px;
+`;
+
+const Overview = styled.p`
+  font-size: 36px;
+  width: 50%;
+`;
+
+const Slider = styled.div`
+  position: relative;
+  top: -100px;
+`;
+
+const Row = styled(motion.div)`
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(6, 1fr);
+  position: absolute;
+  width: 100%;
+`;
+
+const Box = styled(motion.div)`
+  background-color: white;
+  height: 200px;
+`;
+
+const rowVariants = {
+  hidden: {
+    x: window.outerWidth + 10,
+  },
+  visible: {
+    x: 0,
+  },
+  exiting: {
+    x: -window.outerWidth - 10,
+  },
 };
 
 function Home() {
-  const [id, setId] = useState<null | string>(null);
+  const { data, isLoading } = useQuery<IGetMoviesResult>(
+    ["movies", "nowPlaying"],
+    getMovies
+  );
+
+  const [index, setIndex] = useState(0);
+  const increaseIndex = () => setIndex((prev) => prev + 1);
+
   return (
     <Wrapper>
-      <Grid>
-        {["1", "2", "3", "4"].map((n) => (
-          <Box onClick={() => setId(n)} key={n} layoutId={n} />
-        ))}
-      </Grid>
-      <AnimatePresence>
-      {id ? (
-          <Overlay
-            variants={overlay}
-            onClick={() => setId(null)}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
+      {isLoading ? (
+        <Loader>Loading...</Loader>
+      ) : (
+        <>
+          <Banner
+            onClick={increaseIndex}
+            bgPhoto={makeImagePath(data?.results[0].backdrop_path || "")}
           >
-            <Box layoutId={id} style={{ width: 400, height: 200 }} />
-          </Overlay>
-        ) : null}
-      </AnimatePresence>
+            <Title>{data?.results[0].title}</Title>
+            <Overview>{data?.results[0].overview}</Overview>
+          </Banner>
+          <Slider>
+            <AnimatePresence>
+              <Row
+                variants={rowVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exiting"
+                transition={{ type:"tween", duration: 1 }}
+                key={index}
+              >
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <Box key={i}>{i}</Box>
+                ))}
+              </Row>
+            </AnimatePresence>
+          </Slider>
+        </>
+      )}
     </Wrapper>
   );
 }
